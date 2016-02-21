@@ -34,6 +34,12 @@
 #   Which SSL version you plan to enforce for this tunnel.  The preferred and
 #   default is TLSv1.
 #
+# [*verify*]
+#   Set stunnel's SSL verification level. The default is 2.
+#
+# [*options*]
+#   Set stunnel's OpenSSL library options 
+#
 # [*chroot*]
 #   To protect your host the stunnel application runs inside a chrooted
 #   environment.  You must devine the location of the processes' root
@@ -102,6 +108,8 @@ define stunnel::tun(
     $ca_file,
     $crl_file,
     $ssl_version = 'TLSv1',
+    $verify = 2,
+    $options,
     $chroot,
     $user,
     $group,
@@ -115,10 +123,15 @@ define stunnel::tun(
 ) {
 
   $ssl_version_real = $ssl_version ? {
+    'all'   => 'all',
     'tlsv1' => 'TLSv1',
     'sslv2' => 'SSLv2',
     'sslv3' => 'SSLv3',
     default => $ssl_version,
+  }
+
+  $verify_real = $verify ? {
+    default => $verify,
   }
 
   $client_on = $client ? {
@@ -126,7 +139,7 @@ define stunnel::tun(
     false => 'no',
   }
 
-  validate_re($ssl_version_real, '^SSLv2$|^SSLv3$|^TLSv1$', 'The option ssl_version must have a value that is either SSLv2, SSLv3, of TLSv1. The default and prefered option is TLSv1. SSLv2 should be avoided.')
+  validate_re($ssl_version_real, '^all|^SSLv2$|^SSLv3$|^TLSv1$', 'The option ssl_version must have a value that is either all, SSLv2, SSLv3, of TLSv1. The default and prefered option is TLSv1. all and SSLv2 should be avoided. If all is used, SSLv2 should be disabled by setting options = NO_SSLv2')
 
   file { "${conf_dir}/${name}.conf":
     ensure  => file,
