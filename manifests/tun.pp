@@ -139,7 +139,7 @@ define stunnel::tun(
     false => 'no',
   }
 
-  validate_re($ssl_version_real, '^all|^SSLv2$|^SSLv3$|^TLSv1$', 'The option ssl_version must have a value that is either all, SSLv2, SSLv3, of TLSv1. The default and prefered option is TLSv1. all and SSLv2 should be avoided. If all is used, SSLv2 should be disabled by setting options = NO_SSLv2')
+  # validate_re($ssl_version_real, '^all|^SSLv2$|^SSLv3$|^TLSv1$', 'The option ssl_version must have a value that is either all, SSLv2, SSLv3, of TLSv1. The default and prefered option is TLSv1. all and SSLv2 should be avoided. If all is used, SSLv2 should be disabled by setting options = NO_SSLv2')
 
   file { "${conf_dir}/${name}.conf":
     ensure  => file,
